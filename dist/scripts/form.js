@@ -1,10 +1,6 @@
 export class Form {
-    static isAuthenticated() {
-        return !!localStorage.getItem('authToken');
-    }
     constructor(page) {
         this.page = page;
-        this.logoutButton = document.getElementById('logoutButton');
         this.fields = [
             {
                 name: 'email',
@@ -25,22 +21,16 @@ export class Form {
         if (this.page === 'signup') {
 
             this.fields.unshift({
-                name: 'name',
-                id: 'name',
-                element: null,
-                regex: /^[А-Я"][а-я]*(?: [А-Я"][а-я]*)*$/,
-                valid: false,
-            },
-            {   name: 'lastName',
-                id: 'lastName',
+                name: 'fullName',
+                id: 'fullName',
                 element: null,
                 regex: /^[А-Я"][а-я]*(?: [А-Я"][а-я]*)*$/,
                 valid: false,
             });
 
             this.fields.push({
-                name: 'passwordRepeat',
-                id: 'passwordRepeat',
+                name: 'confirmPassword',
+                id: 'confirmPassword',
                 element: null,
                 regex: /^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&? "]).*$/,
                 valid: false,
@@ -55,7 +45,7 @@ export class Form {
         this.fields.forEach(field => {
             field.element = document.getElementById(field.id);
             if (field.element) {
-                field.element.addEventListener('input', () => this.validateField(field));
+                field.element.addEventListener('change', () => this.validateField(field));
             } else {
                 console.error(`Элемент с id ${field.id} не найден`);
             }
@@ -63,26 +53,20 @@ export class Form {
 
         this.submitButton = document.getElementById('submit');
         if (this.submitButton) {
-            this.submitButton.addEventListener('click', async( event) => {
+            this.submitButton.addEventListener('click', (event) => {
                 event.preventDefault();
-                await this.submitForm();
+                this.submitForm();
             });
         } else {
             console.error('Submit button not found');
         }
 
-        if (this.logoutButton) {
-            this.logoutButton.addEventListener('click', this.logout.bind(this));
-        }
-
     }
-
-
 
     validateField(field) {
         const element = field.element;
         const inputGroup = element.parentNode;
-        const errorMessage = inputGroup.nextElementSibling;
+        const errorMessage = inputGroup.querySelector('.error-message');
 
         if (!element.value || !element.value.match(field.regex)) {
             inputGroup.classList.add('error');
@@ -94,7 +78,7 @@ export class Form {
             errorMessage.style.display = 'none';
             field.valid = true;
 
-            if (field.name === "passwordRepeat") {
+            if (field.name === "confirmPassword") {
                 const passwordField = this.fields.find(f => f.name === 'password').element;
                 if (element.value !== passwordField.value) {
                     inputGroup.classList.add('error');
@@ -118,11 +102,9 @@ export class Form {
                 return 'Введите корректный адрес электронной почты';
             case 'password':
                 return 'Пароль должен содержать как минимум 8 символов, включая буквы, цифры и специальные символы';
-            case 'name':
-                return 'Введите ваше имя';
-            case 'lastName':
-                return 'Введите вашу фамилию';
-            case 'passwordRepeat':
+            case 'fullName':
+                return 'Введите ваше ФИО';
+            case 'confirmPassword':
                 return 'Пароли не совпадают';
             default:
                 return 'Некорректное значение';
@@ -145,7 +127,6 @@ export class Form {
                 acc[field.name] = field.element.value;
                 return acc;
             }, {});
-            console.log('Отправляемые данные:', fieldValues);
             try {
                 const endpoint = this.page === 'signup' ? 'signup' : 'login';
                 const response = await fetch(`http://localhost:3000/api/${endpoint}`, {
@@ -158,24 +139,19 @@ export class Form {
                     body: JSON.stringify(fieldValues)
                 });
 
-                console.log('Ответ от сервера:', response);
-
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Ошибка запроса');
+                    throw new Error('Ошибка запроса');
                 }
 
                 const result = await response.json();
                 console.log(result);
-                localStorage.setItem('authToken', result.token);
                 alert(this.page === 'signup' ? 'Регистрация успешна!' : 'Вход успешен!');
                 window.location.href = this.page === 'signup' ? "/login" : "/";
 
             } catch (error) {
                 console.log('Ошибка', error);
-                alert('Произошла ошибка при' + (this.page === 'signup' ? ' регистрации' : ' входе'));
+                alert('Произошла ошибка при' + (this.page === 'signup' ? 'регистрации' : 'входе'));
             }
         }
     }
-
 }

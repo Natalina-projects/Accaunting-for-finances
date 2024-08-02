@@ -3,6 +3,7 @@ import {Form} from "./components/form";
 import {IncomesExpenses} from "./components/incomes-expenses";
 import {CategoryBasePage} from "./components/category-base-page";
 import {CreateIncomeExpense} from "./components/create-income-expense";
+import {Sidebar} from "./components/sidebar";
 
 export class Router {
     constructor() {
@@ -16,15 +17,6 @@ export class Router {
                 route: '/',
                 title: 'Главная',
                 template: 'templates/index.html',
-                load: () => {
-
-                }
-
-            },
-            {
-                route: '/main',
-                title: 'Главная',
-                template: 'templates/main.html',
                 useSidebar: 'templates/sidebar.html',
                 load: () => {
                     new MainChart();
@@ -32,11 +24,11 @@ export class Router {
 
             },
             {
-                route: '/sign-up',
+                route: '/signup',
                 title: 'Регистрация',
                 template: 'templates/sign-up.html',
                 load: () => {
-                    new Form();
+                    new Form('signup');
                 }
 
             },
@@ -45,7 +37,7 @@ export class Router {
                 title: 'Авторизация',
                 template: 'templates/login.html',
                 load: () => {
-                    new Form();
+                    new Form('login');
                 }
 
             },
@@ -65,19 +57,8 @@ export class Router {
                 template: 'templates/incomes.html',
                 useSidebar: 'templates/sidebar.html',
                 load: () => {
-
-                }
-
-            },
-            {
-                route: '/expenses',
-                title: 'Расходы',
-                template: 'templates/expenses.html',
-                useSidebar: 'templates/sidebar.html',
-                load: () => {
                     new CategoryBasePage();
                 }
-
             },
             {
                 route: '/expenses',
@@ -94,50 +75,30 @@ export class Router {
                 title: 'Редактирование доходов',
                 template: 'templates/edit-incomes.html',
                 useSidebar: 'templates/sidebar.html',
-                load: () => {
-
-                }
-
             },
             {
                 route: '/edit-expenses',
                 title: 'Редактирование расходов',
                 template: 'templates/edit-expenses.html',
                 useSidebar: 'templates/sidebar.html',
-                load: () => {
-
-                }
-
             },
             {
                 route: '/edit-income-expense',
                 title: 'Редактирование дохода/расхода',
                 template: 'templates/edit-income-expense.html',
                 useSidebar: 'templates/sidebar.html',
-                load: () => {
-
-                }
-
             },
             {
                 route: '/create-incomes',
                 title: 'Создание доходов',
                 template: 'templates/create-incomes.html',
                 useSidebar: 'templates/sidebar.html',
-                load: () => {
-
-                }
-
             },
             {
                 route: '/create-expenses',
                 title: 'Создание расходов',
                 template: 'templates/create-expenses.html',
                 useSidebar: 'templates/sidebar.html',
-                load: () => {
-
-                }
-
             },
             {
                 route: '/create-income-expense',
@@ -145,7 +106,7 @@ export class Router {
                 template: 'templates/create-income-expense.html',
                 useSidebar: 'templates/sidebar.html',
                 load: () => {
-                    new CreateIncomeExpense;
+                    new CreateIncomeExpense();
                 }
 
             },
@@ -158,7 +119,12 @@ export class Router {
     }
 
     async activateRoute() {
-        const urlRoute = window.location.pathname;
+        let urlRoute = window.location.pathname;
+
+        if (!Form.isAuthenticated() && urlRoute === '/' || urlRoute === '') {
+            urlRoute = '/login';
+            window.history.replaceState({}, '', urlRoute);
+        }
 
         const newRoute = this.routes.find(item => item.route === urlRoute);
 
@@ -167,12 +133,44 @@ export class Router {
                 this.titlePageElement.innerText = newRoute.title;
             }
 
-            if (newRoute.useSidebar) {
-                this.contentPageElement.innerHTML = newRoute.useSidebar;
-            }
+            let mainContentHTML = '';
 
             if (newRoute.template) {
-                this.contentPageElement.innerHTML = await fetch(newRoute.template).then(response => response.text());
+                try {
+                    mainContentHTML = await fetch(newRoute.template).then(response => response.text());
+                } catch (error) {
+                    console.error(`Ошибка загрузки страницы: ${newRoute.template}`, error);
+                }
+
+            }
+
+            if (newRoute.useSidebar) {
+                try {
+                    const sidebarHTML = await fetch(newRoute.useSidebar).then(response => response.text());
+                    this.contentPageElement.innerHTML = `
+                    <div class="sidebar">
+                        ${sidebarHTML}
+                    </div>
+                    <div class="main-content">
+                        ${mainContentHTML}
+                    </div>
+                `;
+                    new Sidebar();
+                } catch (error) {
+                    console.error(`Ошибка при загрузке сайдбара: ${newRoute.useSidebar}`, error);
+                }
+
+            } else {
+                this.contentPageElement.innerHTML = mainContentHTML;
+            }
+
+            if (newRoute.load) {
+                try {
+                    newRoute.load()
+                } catch (error) {
+                    console.error(`Ошибка при загрузке роута: ${newRoute.route}`, error);
+                }
+
             }
 
         } else {
@@ -181,9 +179,5 @@ export class Router {
         }
 
 
-
-
-
-        newRoute.load();
     }
 }
