@@ -110,6 +110,14 @@ export class Router {
                 }
 
             },
+            {
+                route: '/logout',
+                title: 'Выход',
+                template: null,
+                load: () => {
+                    Form.logout();
+                }
+            }
         ]
     }
 

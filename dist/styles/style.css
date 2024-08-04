@@ -354,7 +354,7 @@ td i:hover {
     box-sizing: border-box;
     border: 1px solid rgb(206, 212, 218);
     border-radius: 4px;
-    margin-bottom: 10px;
+    margin-top: 10px;
 
 }
 
@@ -375,13 +375,20 @@ td i:hover {
     margin-top: 10px;
 }
 
-
-
 .input-group input {
     width: 99%;
     border: none;
     padding: 0 13px;
 
+}
+
+.error-message {
+    font-size: 10px;
+    color: red;
+}
+
+#submit {
+    margin-top: 20px;
 }
 
 /*Adaptive*/

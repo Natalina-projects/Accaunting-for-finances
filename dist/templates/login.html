@@ -12,17 +12,19 @@
                             <path id="mail" d="M7.38849 0.117554L13.6885 4.31763C13.8831 4.44775 14 4.66626 14 4.90002L14 12.6C14 13.3721 13.3721 14 12.6 14L1.40002 14C0.62793 14 0 13.3721 0 12.6L0 4.90002C0 4.66626 0.116882 4.44775 0.312195 4.31763L6.61218 0.117554C6.84741 -0.0391846 7.15332 -0.0391846 7.38849 0.117554ZM7 1.54138L12.0379 4.90002L7 8.25854L1.9621 4.90002L7 1.54138ZM1.40002 6.20825L1.40002 12.6L12.5979 12.6L12.6 6.20825L7.38849 9.68237C7.27087 9.76074 7.13507 9.80005 7 9.80005C6.86493 9.80005 6.72913 9.76074 6.61151 9.68237L1.40002 6.20825Z" fill="#6C757D"/>
                         </svg>
                     </div>
-                    <input type="email" id="loginEmail" placeholder="Электронная почта" name="email" required>
+                    <input type="email" id="email" placeholder="Электронная почта" name="email" required>
                 </div>
+                <div class="error-message" style="display: none;"></div>
                 <div class="input-group">
                     <div class="img-input">
                         <svg width="12.8" height="16" viewBox="0 0 12.8 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path id="lock" d="M2.40002 4C2.40002 1.79443 4.1944 0 6.40002 0C8.60559 0 10.4 1.79443 10.4 4L10.4 6.40002L11.2 6.40002C12.0824 6.40002 12.8 7.11755 12.8 8L12.8 14.4C12.8 15.2823 12.0824 16 11.2 16L1.59998 16C0.71759 16 0 15.2823 0 14.4L0 8C0 7.11755 0.71759 6.40002 1.59998 6.40002L2.40002 6.40002L2.40002 4ZM4 4L4 6.40002L8.79999 6.40002L8.79999 4C8.79999 2.67676 7.72321 1.59998 6.40002 1.59998C5.07678 1.59998 4 2.67676 4 4ZM11.2 8L11.2016 14.4L1.59998 14.4L1.59998 8L11.2 8Z" fill="#6C757D"/>
                         </svg>
                     </div>
-                    <input type="password" id="loginPassword" placeholder="Пароль" name="password" required>
+                    <input type="password" id="password" placeholder="Пароль" name="password" required>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Войти</button>
+                <div class="error-message" style="display: none;"></div>
+                <button id='submit' type="submit" class="btn btn-primary w-100">Войти</button>
             </form>
             <p class="login-link">Еще нет аккаунта? <a href="/signup">Пройдите регистрацию</a></p>
         </div>
