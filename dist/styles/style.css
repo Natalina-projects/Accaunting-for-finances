@@ -1,18 +1,18 @@
 @font-face {
     font-family: 'Roboto-Regular';
-    src: url('fonts/Roboto-Regular.ttf') format('ttf');
+    src: url('static/fonts/Roboto-Regular.ttf') format('ttf');
     font-weight: 400;
 }
 
 @font-face {
     font-family: 'Roboto-Medium';
-    src: url('fonts/Roboto-Medium.ttf') format('ttf');
+    src: url('static/fonts/Roboto-Medium.ttf') format('ttf');
     font-weight: 500;
 }
 
 @font-face {
     font-family: 'Roboto-Bold';
-    src: url('fonts/Roboto-Bold.ttf') format('ttf');
+    src: url('static/fonts/Roboto-Bold.ttf') format('ttf');
     font-weight: 700;
 }
 
@@ -21,29 +21,25 @@
     padding: 0;
 }
 
-
 body, html {
     background-color: white;
     font-family: "Roboto-Regular", sans-serif;
 }
 
-.layout {
+#content {
     display: flex;
     margin: 0 auto;
     gap: 60px;
     height: 100vh;
-
-
 }
 
 .sidebar {
     display: flex;
     width: 219px;
     flex-direction: column;
-    padding: 40px 0;
     color: rgb(5, 44, 101);
     box-sizing: border-box;
-    border: 1px solid lightgray;
+    border-right: 1px solid lightgray;
     height: 100vh;
     transition: all 0.3s ease-in-out;
 }
@@ -59,6 +55,7 @@ body, html {
 }
 
 .sidebar-header {
+    padding-top: 40px;
     padding-bottom: 20px;
     border-bottom: 1px solid lightgray;
 }
@@ -76,12 +73,14 @@ body, html {
     margin-top: 60px;
     padding: 0 20px;
     flex: 1;
+    border-bottom: 1px solid lightgray;
 
 }
 
 .sidebar-nav .category-btn {
     font-size: 14px;
     color: rgb(5, 44, 101);
+
 }
 
 .category-btn::after {
@@ -107,17 +106,16 @@ body, html {
 }
 
 .sidebar-user {
-    margin-top: auto;
+    margin: 0 auto;
     padding-top: 20px;
-    padding-left: 20px;
+    padding-bottom: 40px;
     font-family: 'Roboto-Regular', sans-serif;
     font-size: 14px;
     line-height: 24px;
     color: rgb(5, 44, 101);
-    border-top: 1px solid lightgray;
 }
 
-.content {
+.main-content {
     padding-top: 100px;
 }
 
@@ -356,7 +354,7 @@ td i:hover {
     box-sizing: border-box;
     border: 1px solid rgb(206, 212, 218);
     border-radius: 4px;
-    margin-bottom: 10px;
+    margin-top: 10px;
 
 }
 
@@ -377,13 +375,20 @@ td i:hover {
     margin-top: 10px;
 }
 
-
-
 .input-group input {
     width: 99%;
     border: none;
     padding: 0 13px;
 
+}
+
+.error-message {
+    font-size: 10px;
+    color: red;
+}
+
+#submit {
+    margin-top: 20px;
 }
 
 /*Adaptive*/
@@ -420,10 +425,6 @@ td i:hover {
 
 @media (max-width: 1200px) {
 
-    .layout {
-        gap: 50px;
-    }
-
     .main {
         gap: 50px;
     }
@@ -444,10 +445,6 @@ td i:hover {
 /* 769px - 1024px */
 
 @media (max-width: 1024px) {
-
-    .layout {
-        gap: 30px;
-    }
 
     .main {
         gap: 10px;

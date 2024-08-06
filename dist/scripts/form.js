@@ -2,13 +2,6 @@ export class Form {
     static isAuthenticated() {
         return !!localStorage.getItem('authToken');
     }
-
-    static logout() {
-        localStorage.removeItem('authToken');
-        alert('Вы вышли из системы');
-        window.location.href = '/login';
-    }
-
     constructor(page) {
         this.page = page;
         this.logoutButton = document.getElementById('logoutButton');
@@ -83,6 +76,8 @@ export class Form {
         }
 
     }
+
+
 
     validateField(field) {
         const element = field.element;
