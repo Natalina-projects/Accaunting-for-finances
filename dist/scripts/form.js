@@ -2,6 +2,13 @@ export class Form {
     static isAuthenticated() {
         return !!localStorage.getItem('authToken');
     }
+
+    static logout() {
+        localStorage.removeItem('authToken');
+        alert('Вы вышли из системы');
+        window.location.href = '/login';
+    }
+
     constructor(page) {
         this.page = page;
         this.logoutButton = document.getElementById('logoutButton');
@@ -76,8 +83,6 @@ export class Form {
         }
 
     }
-
-
 
     validateField(field) {
         const element = field.element;
@@ -166,16 +171,42 @@ export class Form {
                 }
 
                 const result = await response.json();
-                console.log(result);
-                localStorage.setItem('authToken', result.token);
-                alert(this.page === 'signup' ? 'Регистрация успешна!' : 'Вход успешен!');
-                window.location.href = this.page === 'signup' ? "/login" : "/";
 
+                localStorage.setItem('authToken', result.token);
+                localStorage.setItem('name', result.user.name);
+                localStorage.setItem('lastName', result.user.lastName);
+
+                if (this.page === 'signup') {
+                    this.handleSignup();
+                } else {
+                    this.handleLogin();
+                }
             } catch (error) {
                 console.log('Ошибка', error);
                 alert('Произошла ошибка при' + (this.page === 'signup' ? ' регистрации' : ' входе'));
             }
         }
     }
+
+    showPopup (message, redirectURL) {
+        document.getElementById('popup-message').innerText = message;
+        const popup = document.getElementById('popup-signup');
+        popup.style.display = 'flex';
+        setTimeout(() => {
+            popup.classList.add('fade-out');
+            setTimeout(() => {
+                window.location.href = redirectURL;
+            }, 500)
+        }, 3000)
+    }
+
+    handleSignup() {
+        this.showPopup('Регистрация прошла успешно!', '/login');
+    }
+
+    handleLogin() {
+        window.location.href = '/';
+    }
+
 
 }

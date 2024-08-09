@@ -1,10 +1,19 @@
+import {Form} from "./form";
+
 export class Sidebar {
     constructor() {
         this.categoryMenu = document.getElementById('home-collapse');
         this.categoryMenu.addEventListener('shown.bs.collapse', this.toggleShowActive.bind(this));
         this.categoryMenu.addEventListener('hidden.bs.collapse', this.toggleShowActive.bind(this));
+        this.logoutButton = document.getElementById('logoutButton');
 
         this.collapseSidebarOnResize();
+        this.setupUserName();
+
+        if (this.logoutButton) {
+            this.logoutButton.addEventListener('click', Form.logout.bind(this));
+        }
+
 
     }
 
@@ -28,6 +37,18 @@ export class Sidebar {
             categoryBtn.classList.remove('show-active');
         }
 
+    }
+
+    setupUserName() {
+        const userNameSpan = document.getElementById('userNameSpan');
+        const userName = localStorage.getItem('name');
+        const userLastName = localStorage.getItem('lastName');
+
+        if (userName && userLastName) {
+            userNameSpan.textContent = `${userName} ${userLastName}`;
+        } else {
+            userNameSpan.textContent = 'Пользователь не найден';
+        }
     }
 
 }

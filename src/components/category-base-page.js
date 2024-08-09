@@ -5,6 +5,7 @@ export class CategoryBasePage {
         this.yesBtn = document.getElementById('yesBtn');
         this.noBtn = document.getElementById('noBtn');
         this.popupMessage = document.querySelector('.popup p');
+        this.cardElementToDelete = null;
 
         if (this.cardsContainer && this.overlay && this.yesBtn && this.noBtn && this.popupMessage) {
             this.initEventListeners();
@@ -22,25 +23,30 @@ export class CategoryBasePage {
 
     handleCardClick(e) {
         if (e.target.classList.contains('deleteBtn')) {
-            const cardElementToDelete = e.target.closest('.card');
-            const itemText = cardElementToDelete.querySelector('.card-title').textContent;
+            this.cardElementToDelete = e.target.closest('.card');
+            const itemText = this.cardElementToDelete.querySelector('.card-title').textContent;
             this.popupMessage.textContent = `Вы действительно хотите удалить категорию ${itemText}? Связанные доходы будут удалены навсегда.`;
             this.overlay.style.display = 'flex';
         } else if (e.target.classList.contains('editBtn')) {
-            window.location.href = 'edit-incomes.html';
+            window.location.href = '/edit-incomes';
         } else if (e.target.classList.contains('card-plus')) {
-            window.location.href = 'create-incomes.html';
+            window.location.href = '/create-incomes';
         }
     }
 
     handleYesBtnClick() {
-        console.log('Удалено');
-        this.cardElementToDelete.remove();
-        document.getElementById('overlay').style.display = 'none';
-        this.cardElementToDelete = null;
+        if (this.cardElementToDelete) {
+            console.log('Удалено');
+            this.cardElementToDelete.remove();
+            document.getElementById('overlay').style.display = 'none';
+            this.cardElementToDelete = null;
+        }
+
+
     }
 
     handleNoBtnClick() {
         this.overlay.style.display = 'none';
+        this.cardElementToDelete = null;
     }
 }

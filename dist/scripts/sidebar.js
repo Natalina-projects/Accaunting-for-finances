@@ -5,6 +5,7 @@ export class Sidebar {
         this.categoryMenu.addEventListener('hidden.bs.collapse', this.toggleShowActive.bind(this));
 
         this.collapseSidebarOnResize();
+        this.setupUserName();
 
     }
 
@@ -28,6 +29,18 @@ export class Sidebar {
             categoryBtn.classList.remove('show-active');
         }
 
+    }
+
+    setupUserName() {
+        const userNameSpan = document.getElementById('userNameSpan');
+        const userName = localStorage.getItem('name');
+        const userLastName = localStorage.getItem('lastName');
+
+        if (userName && userLastName) {
+            userNameSpan.textContent = `${userName} ${userLastName}`;
+        } else {
+            userNameSpan.textContent = 'Пользователь не найден';
+        }
     }
 
 }

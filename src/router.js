@@ -4,6 +4,7 @@ import {IncomesExpenses} from "./components/incomes-expenses";
 import {CategoryBasePage} from "./components/category-base-page";
 import {CreateIncomeExpense} from "./components/create-income-expense";
 import {Sidebar} from "./components/sidebar";
+import {EditIncomeExpense} from "./components/edit-income-expense";
 
 export class Router {
     constructor() {
@@ -87,6 +88,9 @@ export class Router {
                 title: 'Редактирование дохода/расхода',
                 template: 'templates/edit-income-expense.html',
                 useSidebar: 'templates/sidebar.html',
+                load: () => {
+                    new EditIncomeExpense();
+                }
             },
             {
                 route: '/create-incomes',

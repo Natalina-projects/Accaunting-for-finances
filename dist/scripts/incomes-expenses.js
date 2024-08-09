@@ -27,7 +27,7 @@ export class IncomesExpenses {
             this.popupMessage.textContent = `Вы действительно хотите удалить операцию?`;
             this.overlay.style.display = 'flex';
         } else if (e.target.classList.contains('edit-icon')) {
-            window.location.href = 'edit-income-expense.html';
+            window.location.href = '/edit-income-expense';
         }
     }
 

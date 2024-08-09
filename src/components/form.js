@@ -5,13 +5,15 @@ export class Form {
 
     static logout() {
         localStorage.removeItem('authToken');
+        localStorage.removeItem('name');
+        localStorage.removeItem('lastName');
+        localStorage.removeItem('email');
         alert('Вы вышли из системы');
         window.location.href = '/login';
     }
 
     constructor(page) {
         this.page = page;
-        this.logoutButton = document.getElementById('logoutButton');
         this.fields = [
             {
                 name: 'email',
@@ -78,10 +80,6 @@ export class Form {
             console.error('Submit button not found');
         }
 
-        if (this.logoutButton) {
-            this.logoutButton.addEventListener('click', this.logout.bind(this));
-        }
-
     }
 
     validateField(field) {
@@ -143,7 +141,6 @@ export class Form {
         }
         return validForm;
     }
-
     async submitForm() {
         if (this.validateForm()) {
             const fieldValues = this.fields.reduce((acc, field) => {
@@ -153,17 +150,14 @@ export class Form {
             console.log('Отправляемые данные:', fieldValues);
             try {
                 const endpoint = this.page === 'signup' ? 'signup' : 'login';
-                const response = await fetch(`http://localhost:3000/api/${endpoint}`, {
+                let response = await fetch(`http://localhost:3000/api/${endpoint}`, {
                     method: "POST",
                     headers: {
                         'Content-type': 'application/json',
                         'Accept': 'application/json',
-
                     },
                     body: JSON.stringify(fieldValues)
                 });
-
-                console.log('Ответ от сервера:', response);
 
                 if (!response.ok) {
                     const errorData = await response.json();
@@ -171,16 +165,34 @@ export class Form {
                 }
 
                 const result = await response.json();
-                console.log(result);
-                localStorage.setItem('authToken', result.token);
-                alert(this.page === 'signup' ? 'Регистрация успешна!' : 'Вход успешен!');
-                window.location.href = this.page === 'signup' ? "/login" : "/";
 
+                console.log('Данные от сервера', result);
+
+                if (this.page === 'login') {
+                    localStorage.setItem('authToken', result.tokens.accessToken);
+                    localStorage.setItem('refreshToken', result.tokens.refreshToken);
+                }
+
+                localStorage.setItem('name', result.user.name);
+                localStorage.setItem('lastName', result.user.lastName);
+                localStorage.setItem('email', fieldValues.email);
+
+                if (this.page === 'signup') {
+                    window.location.href = '/login';
+                } else {
+                    console.log('Переход на главную страницу');
+                    window.location.href = '/';
+                }
             } catch (error) {
                 console.log('Ошибка', error);
                 alert('Произошла ошибка при' + (this.page === 'signup' ? ' регистрации' : ' входе'));
             }
         }
     }
+
+
+
+
+
 
 }
