@@ -1,11 +1,18 @@
+import {Auth} from "../services/auth";
+
 export class Sidebar {
     constructor() {
         this.categoryMenu = document.getElementById('home-collapse');
         this.categoryMenu.addEventListener('shown.bs.collapse', this.toggleShowActive.bind(this));
         this.categoryMenu.addEventListener('hidden.bs.collapse', this.toggleShowActive.bind(this));
+        this.logoutButton = document.getElementById('logoutButton');
 
         this.collapseSidebarOnResize();
         this.setupUserName();
+
+        if (this.logoutButton) {
+            this.logoutButton.addEventListener('click', Auth.logout.bind(this));
+        }
 
     }
 
@@ -15,7 +22,7 @@ export class Sidebar {
         toggleBtn.addEventListener('click', () => {
             if (sidebar.classList.contains('sidebar-hidden')) {
                 sidebar.classList.remove('sidebar-hidden');
-                sidebar.style.display.flex;
+                sidebar.style.display = 'flex';
             } else {
                 sidebar.classList.add('sidebar-hidden');
             }

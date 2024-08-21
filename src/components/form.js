@@ -34,18 +34,18 @@ export class Form {
         if (this.page === 'signup') {
 
             this.fields.unshift({
-                name: 'name',
-                id: 'name',
-                element: null,
-                regex: /^[А-Я"][а-я]*(?: [А-Я"][а-я]*)*$/,
-                valid: false,
-            },
-            {   name: 'lastName',
-                id: 'lastName',
-                element: null,
-                regex: /^[А-Я"][а-я]*(?: [А-Я"][а-я]*)*$/,
-                valid: false,
-            });
+                    name: 'name',
+                    id: 'name',
+                    element: null,
+                    regex: /^[А-Я"][а-я]*(?: [А-Я"][а-я]*)*$/,
+                    valid: false,
+                },
+                {   name: 'lastName',
+                    id: 'lastName',
+                    element: null,
+                    regex: /^[А-Я"][а-я]*(?: [А-Я"][а-я]*)*$/,
+                    valid: false,
+                });
 
             this.fields.push({
                 name: 'passwordRepeat',
@@ -189,10 +189,4 @@ export class Form {
             }
         }
     }
-
-
-
-
-
-
 }

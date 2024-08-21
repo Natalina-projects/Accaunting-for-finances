@@ -1,17 +1,15 @@
+import{ApiService} from "../services/api";
+import {CheckAccessToken} from "../utils/shared";
+import {Auth} from "../services/auth";
+
 export class Form {
-    static isAuthenticated() {
-        return !!localStorage.getItem('authToken');
-    }
-
-    static logout() {
-        localStorage.removeItem('authToken');
-        alert('Вы вышли из системы');
-        window.location.href = '/login';
-    }
-
     constructor(page) {
         this.page = page;
-        this.logoutButton = document.getElementById('logoutButton');
+
+        if (page !== 'login' && page!== 'signup') {
+            new CheckAccessToken();
+        }
+
         this.fields = [
             {
                 name: 'email',
@@ -58,6 +56,16 @@ export class Form {
 
     }
 
+    static isAuthenticated() {
+        return !!localStorage.getItem(Auth.accessTokenKey);
+    }
+
+    static logout() {
+        Auth.logout();
+        alert('Вы вышли из системы');
+        window.location.href = '/login';
+    }
+
     init() {
         this.fields.forEach(field => {
             field.element = document.getElementById(field.id);
@@ -76,10 +84,6 @@ export class Form {
             });
         } else {
             console.error('Submit button not found');
-        }
-
-        if (this.logoutButton) {
-            this.logoutButton.addEventListener('click', this.logout.bind(this));
         }
 
     }
@@ -143,7 +147,6 @@ export class Form {
         }
         return validForm;
     }
-
     async submitForm() {
         if (this.validateForm()) {
             const fieldValues = this.fields.reduce((acc, field) => {
@@ -153,33 +156,31 @@ export class Form {
             console.log('Отправляемые данные:', fieldValues);
             try {
                 const endpoint = this.page === 'signup' ? 'signup' : 'login';
-                const response = await fetch(`http://localhost:3000/api/${endpoint}`, {
+                const result = await ApiService.fetchWithAuth(`http://localhost:3000/api/${endpoint}`, {
                     method: "POST",
                     headers: {
                         'Content-type': 'application/json',
                         'Accept': 'application/json',
-
                     },
                     body: JSON.stringify(fieldValues)
                 });
 
-                console.log('Ответ от сервера:', response);
+                console.log('Данные от сервера', result);
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Ошибка запроса');
+                if (this.page === 'login') {
+                    localStorage.setItem('authToken', result.tokens.accessToken);
+                    localStorage.setItem('refreshToken', result.tokens.refreshToken);
                 }
 
-                const result = await response.json();
-
-                localStorage.setItem('authToken', result.token);
                 localStorage.setItem('name', result.user.name);
                 localStorage.setItem('lastName', result.user.lastName);
+                localStorage.setItem('email', fieldValues.email);
 
                 if (this.page === 'signup') {
-                    this.handleSignup();
+                    window.location.href = '/login';
                 } else {
-                    this.handleLogin();
+                    console.log('Переход на главную страницу');
+                    window.location.href = '/';
                 }
             } catch (error) {
                 console.log('Ошибка', error);
@@ -187,26 +188,5 @@ export class Form {
             }
         }
     }
-
-    showPopup (message, redirectURL) {
-        document.getElementById('popup-message').innerText = message;
-        const popup = document.getElementById('popup-signup');
-        popup.style.display = 'flex';
-        setTimeout(() => {
-            popup.classList.add('fade-out');
-            setTimeout(() => {
-                window.location.href = redirectURL;
-            }, 500)
-        }, 3000)
-    }
-
-    handleSignup() {
-        this.showPopup('Регистрация прошла успешно!', '/login');
-    }
-
-    handleLogin() {
-        window.location.href = '/';
-    }
-
 
 }

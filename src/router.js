@@ -5,6 +5,7 @@ import {CategoryBasePage} from "./components/category-base-page";
 import {CreateIncomeExpense} from "./components/create-income-expense";
 import {Sidebar} from "./components/sidebar";
 import {EditIncomeExpense} from "./components/edit-income-expense";
+import {CreateCategory} from "./components/create-category";
 
 export class Router {
     constructor() {
@@ -93,20 +94,17 @@ export class Router {
                 }
             },
             {
-                route: '/create-incomes',
-                title: 'Создание доходов',
-                template: 'templates/create-incomes.html',
+                route: '/create-category',
+                title: 'Создание категории',
+                template: 'templates/create-category.html',
                 useSidebar: 'templates/sidebar.html',
-            },
-            {
-                route: '/create-expenses',
-                title: 'Создание расходов',
-                template: 'templates/create-expenses.html',
-                useSidebar: 'templates/sidebar.html',
+                load: () => {
+                    new CreateCategory();
+                }
             },
             {
                 route: '/create-income-expense',
-                title: 'Создание категории дохода/расхода',
+                title: 'Создание операции дохода/расхода',
                 template: 'templates/create-income-expense.html',
                 useSidebar: 'templates/sidebar.html',
                 load: () => {

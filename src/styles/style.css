@@ -382,6 +382,10 @@ td i:hover {
 
 }
 
+.input-error {
+    border: 1px solid red;
+}
+
 .error-message {
     font-size: 10px;
     color: red;

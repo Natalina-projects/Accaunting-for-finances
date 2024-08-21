@@ -28,9 +28,9 @@ export class CategoryBasePage {
             this.popupMessage.textContent = `Вы действительно хотите удалить категорию ${itemText}? Связанные доходы будут удалены навсегда.`;
             this.overlay.style.display = 'flex';
         } else if (e.target.classList.contains('editBtn')) {
-            window.location.href = 'edit-incomes.html';
+            window.location.href = '/edit-incomes';
         } else if (e.target.classList.contains('card-plus')) {
-            window.location.href = 'create-incomes.html';
+            window.location.href = '/create-incomes';
         }
     }
 
