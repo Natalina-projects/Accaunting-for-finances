@@ -39,8 +39,8 @@ export class CategoryBasePage {
         card.innerHTML = `
         <h3 class="card-title">${categoryName}</h3>
             <div class="actions-btn">
-                <a href="#" class="btn btn-primary editBtn">Редактировать</a>
-                <a href="#" class="btn btn-danger deleteBtn">Удалить</a>
+                <a href="javascript:void(0)" class="btn btn-primary editBtn">Редактировать</a>
+                <a href="javascript:void(0)" class="btn btn-danger deleteBtn">Удалить</a>
             </div>
         `;
         this.cardsContainer.insertBefore(card, this.cardsContainer.querySelector('.card-plus').parentNode);
