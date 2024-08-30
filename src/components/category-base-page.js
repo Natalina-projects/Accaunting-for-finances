@@ -1,3 +1,6 @@
+import config from "../config/config";
+import {CustomHttp} from "../services/custom-http";
+
 export class CategoryBasePage {
     constructor() {
         this.type = this.getCategoryTypeFromURL();
@@ -8,6 +11,7 @@ export class CategoryBasePage {
         this.popupMessage = document.querySelector('.popup p');
         this.cardElementToDelete = null;
         this.contentTitle = document.querySelector('.content-title');
+        this.categories = [];
 
         if (this.cardsContainer && this.overlay && this.yesBtn && this.noBtn && this.popupMessage) {
             this.loadCategories();
@@ -23,12 +27,23 @@ export class CategoryBasePage {
         return urlParams.get('type') || 'income';
     }
 
-    loadCategories() {
+    async loadCategories() {
         const categoriesKey = this.type === 'income' ? 'incomeCategories' : 'expenseCategories';
-        const categories = JSON.parse(localStorage.getItem(categoriesKey)) || [];
+        // const categories = JSON.parse(localStorage.getItem(categoriesKey)) || [];
+        try {
+            const result = await CustomHttp.request(config.host + '/categories/' + this.type);
+            if (result) {
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+                this.categories = result;
 
-        categories.forEach(category => {
-            this.addCategoryCard(category);
+            }
+        } catch (error) {
+            return console.log(error);
+        }
+        this.categories.forEach(category => {
+            this.addCategoryCard(category.title);
         })
 
     }

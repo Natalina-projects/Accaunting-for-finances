@@ -1,13 +1,13 @@
+import {Auth} from "../services/auth";
+import {CustomHttp} from "../services/custom-http";
+
 export class Form {
     static isAuthenticated() {
-        return !!localStorage.getItem('authToken');
+        return !!Auth.getUserInfo();
     }
 
-    static logout() {
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('name');
-        localStorage.removeItem('lastName');
-        localStorage.removeItem('email');
+    static async logout() {
+        await Auth.logout();
         alert('Вы вышли из системы');
         window.location.href = '/login';
     }
@@ -150,32 +150,23 @@ export class Form {
             console.log('Отправляемые данные:', fieldValues);
             try {
                 const endpoint = this.page === 'signup' ? 'signup' : 'login';
-                let response = await fetch(`http://localhost:3000/api/${endpoint}`, {
-                    method: "POST",
-                    headers: {
-                        'Content-type': 'application/json',
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify(fieldValues)
-                });
+                const response = await CustomHttp.request(`http://localhost:3000/api/${endpoint}`, "POST", fieldValues);
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Ошибка запроса');
+                if (!response || response.error) {
+                    throw new Error(response.error || 'Неизвестная ошибка');
                 }
 
-                const result = await response.json();
-
-                console.log('Данные от сервера', result);
+                console.log('Данные от сервера', response);
 
                 if (this.page === 'login') {
-                    localStorage.setItem('authToken', result.tokens.accessToken);
-                    localStorage.setItem('refreshToken', result.tokens.refreshToken);
+                    Auth.setTokens(response.tokens.accessToken, response.tokens.refreshToken);
                 }
 
-                localStorage.setItem('name', result.user.name);
-                localStorage.setItem('lastName', result.user.lastName);
-                localStorage.setItem('email', fieldValues.email);
+                Auth.setUserInfo({
+                    name: response.user.name,
+                    lastName: response.user.lastName,
+                    email: response.user.email
+                });
 
                 if (this.page === 'signup') {
                     window.location.href = '/login';
@@ -184,8 +175,8 @@ export class Form {
                     window.location.href = '/';
                 }
             } catch (error) {
-                console.log('Ошибка', error);
-                alert('Произошла ошибка при' + (this.page === 'signup' ? ' регистрации' : ' входе'));
+                console.error('Ошибка', error);
+                alert(`Произошла ошибка: ${error.message}`);
             }
         }
     }

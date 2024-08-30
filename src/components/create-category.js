@@ -1,3 +1,5 @@
+import config from "../config/config";
+import {CustomHttp} from "../services/custom-http";
 export class CreateCategory {
     constructor() {
         this.type = this.getCategoryTypeFromURL();
@@ -52,6 +54,7 @@ export class CreateCategory {
         inputElement.classList.add('input-error');
         let errorMessageElement = inputElement.nextElementSibling;
         if (!errorMessageElement || !errorMessageElement.classList.contains('error-message')) {
+            errorMessageElement = document.createElement('div');
             errorMessageElement.classList.add('error-message');
             inputElement.insertAdjacentElement('afterend', errorMessageElement);
         }
@@ -69,15 +72,30 @@ export class CreateCategory {
         }
     }
 
-    createCategory(categoryName) {
+    async createCategory(categoryName) {
         console.log(`Создание категории: ${categoryName}, тип: ${this.type}`);
-        // cохранение в localStorage или API
+        try {
+            const endpoint = this.type === 'income' ? '/category/income' : '/category/expense';
+            const result = await CustomHttp.request(config.host + endpoint , 'POST',
+                {
+                    title: categoryName,
+                })
 
-        this.redirectToCategoryPage(categoryName);
+            if (result) {
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+                this.redirectToCategoryPage(categoryName);
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+
     }
 
     redirectToCategoryPage(categoryName) {
-        const redirectUrl = this.type === 'income' ? '/incomes' : 'expenses';
+        const redirectUrl = this.type === 'income' ? '/incomes' : '/expenses';
         this.updateCategoryPage(categoryName);
         window.location.href = redirectUrl;
     }

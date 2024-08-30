@@ -41,11 +41,11 @@ export class Sidebar {
 
     setupUserName() {
         const userNameSpan = document.getElementById('userNameSpan');
-        const userName = localStorage.getItem('name');
-        const userLastName = localStorage.getItem('lastName');
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
 
-        if (userName && userLastName) {
-            userNameSpan.textContent = `${userName} ${userLastName}`;
+
+        if (userInfo && userInfo.name && userInfo.lastName) {
+            userNameSpan.textContent = `${userInfo.name} ${userInfo.lastName}`;
         } else {
             userNameSpan.textContent = 'Пользователь не найден';
         }
