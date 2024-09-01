@@ -23,6 +23,7 @@ export class CustomHttp {
 
         try {
             const response = await fetch(url, params);
+            console.log(response);
 
             if (response.status < 200 || response.status >= 300) {
                 if (response.status === 401) {
@@ -38,7 +39,13 @@ export class CustomHttp {
                 const errorMessage = errorText || response.statusText || 'Ошибка запроса';
                 throw new Error(`Ошибка ${response.status}: ${errorMessage}`);
             }
-            return await response.json();
+
+            if (response.status !== 204) {
+                return await response.json();
+            } else {
+                return null;
+            }
+
         } catch (error) {
             console.error('Ошибка при выполнении запроса:', error);
             throw error;

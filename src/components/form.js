@@ -9,6 +9,7 @@ export class Form {
     static async logout() {
         await Auth.logout();
         alert('Вы вышли из системы');
+        localStorage.clear();
         window.location.href = '/login';
     }
 

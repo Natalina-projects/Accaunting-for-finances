@@ -28,8 +28,6 @@ export class CategoryBasePage {
     }
 
     async loadCategories() {
-        const categoriesKey = this.type === 'income' ? 'incomeCategories' : 'expenseCategories';
-        // const categories = JSON.parse(localStorage.getItem(categoriesKey)) || [];
         try {
             const result = await CustomHttp.request(config.host + '/categories/' + this.type);
             if (result) {
@@ -43,14 +41,15 @@ export class CategoryBasePage {
             return console.log(error);
         }
         this.categories.forEach(category => {
-            this.addCategoryCard(category.title);
-        })
+            this.addCategoryCard(category.id, category.title);
+        });
 
     }
 
-    addCategoryCard(categoryName) {
+    addCategoryCard(categoryId, categoryName) {
         const card = document.createElement('div');
         card.className = 'card';
+        card.dataset.categoryId = categoryId;
         card.innerHTML = `
         <h3 class="card-title">${categoryName}</h3>
             <div class="actions-btn">
@@ -81,16 +80,21 @@ export class CategoryBasePage {
         }
     }
 
-    handleYesBtnClick() {
+    async handleYesBtnClick() {
         if (this.cardElementToDelete) {
             const categoryName = this.cardElementToDelete.querySelector('.card-title').textContent;
-            const categoriesKey = this.type === 'income' ? 'incomeCategories' : 'expenseCategories';
-            let categories = JSON.parse(localStorage.getItem(categoriesKey)) || [];
 
-            categories = categories.filter(category => category !== categoryName);
-            localStorage.setItem(categoriesKey, JSON.stringify(categories));
+            try {
+                const result = await CustomHttp.request(config.host + '/categories/' + this.type + '/' + categoryName, 'DELETE');
+                if (result && !result.error) {
+                    this.cardElementToDelete.remove();
+                } else {
+                    console.log('Ошибка при удалении категории:', result.error);
+                }
+            } catch (error) {
+                console.error('Ошибка при удалении категории:', error);
+            }
 
-            this.cardElementToDelete.remove();
             this.overlay.style.display = 'none';
             this.cardElementToDelete = null;
         }

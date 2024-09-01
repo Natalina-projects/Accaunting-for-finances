@@ -19,15 +19,16 @@ export class Auth {
 
             if (response && response.status === 200) {
                 const result = await response.json();
+                console.log('Refresh token result:', result);
                 if (result && !result.error) {
-                    this.setTokens(result.accessToken, result.refreshToken);
+                    this.setTokens(result.tokens.accessToken, result.tokens.refreshToken);
                     return true;
                 }
             }
         }
 
         this.removeTokens();
-        location.href = '#/';
+        location.href = '/login';
         return false;
 
     }
@@ -40,6 +41,7 @@ export class Auth {
     static removeTokens() {
         localStorage.removeItem(this.accessTokenKey);
         localStorage.removeItem(this.refreshTokenKey);
+        localStorage.removeItem(this.userInfoKey);
     }
 
     static async logout() {
@@ -57,12 +59,12 @@ export class Auth {
             if (response && response.status === 200) {
                 const result = await response.json();
                 if (result && !result.error) {
-                    Auth.removeTokens();
-                    localStorage.removeItem(Auth.userInfoKey);
+                    this.removeTokens();
                     return true;
                 }
             }
         }
+        return false;
     }
 
     static  setUserInfo(info) {
@@ -71,11 +73,7 @@ export class Auth {
 
     static getUserInfo() {
         const userInfo = localStorage.getItem(this.userInfoKey);
-        if (userInfo) {
-            return JSON.parse(userInfo);
-        }
-
-        return null;
+        return userInfo ? JSON.parse(userInfo) : null;
     }
 
 }

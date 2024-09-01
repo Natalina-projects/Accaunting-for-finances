@@ -20,7 +20,8 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
         template: './index.html',
-        filename: "index.html"
+        filename: "index.html",
+        inject: true
         }),
         new CopyPlugin({
             patterns: [

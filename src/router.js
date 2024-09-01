@@ -131,7 +131,7 @@ export class Router {
     async activateRoute() {
         let urlRoute = window.location.pathname;
 
-        if (!Form.isAuthenticated() && urlRoute === '/' || urlRoute === '') {
+        if (!Form.isAuthenticated() && (urlRoute === '/' || urlRoute === '')) {
             urlRoute = '/login';
             window.history.replaceState({}, '', urlRoute);
         }
@@ -185,7 +185,9 @@ export class Router {
 
         } else {
             console.log('No route found');
-            window.location.href = '/';
+            this.titlePageElement.innerText = 'Страница не найдена';
+            this.contentPageElement.innerHTML = '<p>Ошибка 404: Страница не найдена</p>';
+            window.history.replaceState({}, '', '/');
         }
 
 
